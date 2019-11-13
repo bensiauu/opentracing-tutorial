@@ -2,28 +2,35 @@
 
 
 [[projects]]
+  digest = "1:bcf20628a21b28c85e0696276ec5c915adf3a7db9f8c241f9e4a57f73ee056f3"
   name = "github.com/apache/thrift"
   packages = ["lib/go/thrift"]
+  pruneopts = ""
   revision = "b2a4d4ae21c789b689dd162deb819665567f481c"
   version = "0.10.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:c46fd324e7902268373e1b337436a6377c196e2dbd7b35624c6256d29d494e78"
   name = "github.com/codahale/hdrhistogram"
   packages = ["."]
+  pruneopts = ""
   revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
 
 [[projects]]
+  digest = "1:78fb99d6011c2ae6c72f3293a83951311147b12b06a5ffa43abf750c4fab6ac5"
   name = "github.com/opentracing/opentracing-go"
   packages = [
     ".",
     "ext",
-    "log"
+    "log",
   ]
+  pruneopts = ""
   revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
   version = "v1.0.2"
 
 [[projects]]
+  digest = "1:bd88be6b21da3e44c062869bc19ed40312f8e13780724655eb1ee77787c6b34d"
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
@@ -38,26 +45,37 @@
     "thrift-gen/jaeger",
     "thrift-gen/sampling",
     "thrift-gen/zipkincore",
-    "utils"
+    "utils",
   ]
+  pruneopts = ""
   revision = "3ac96c6e679cb60a74589b0d0aa7c70a906183f7"
   version = "v2.11.2"
 
 [[projects]]
+  digest = "1:929a50995c3520005afd4aa115966bf8d314621525550459304495555b7a32b4"
   name = "github.com/uber/jaeger-lib"
   packages = ["metrics"]
+  pruneopts = ""
   revision = "7f95f4f7e80028096410abddaae2556e4c61b59f"
   version = "v1.3.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:f3ee2a699dd02cac37fbca1d028f1121ce0e48143a0f9abd293d3141dcfe6b92"
   name = "golang.org/x/net"
   packages = ["context"]
+  pruneopts = ""
   revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f77c4d303d0352386fbc06e154d8cb3aee8da3588bdf039647791f57709a20fc"
+  input-imports = [
+    "github.com/opentracing/opentracing-go",
+    "github.com/opentracing/opentracing-go/ext",
+    "github.com/opentracing/opentracing-go/log",
+    "github.com/uber/jaeger-client-go",
+    "github.com/uber/jaeger-client-go/config",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

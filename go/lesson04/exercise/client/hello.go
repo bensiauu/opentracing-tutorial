@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"os"
 
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/opentracing/opentracing-go/log"
 	xhttp "github.com/yurishkuro/opentracing-tutorial/go/lib/http"
@@ -14,8 +14,8 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		panic("ERROR: Expecting one argument")
+	if len(os.Args) != 3 {
+		panic("ERROR: Expecting two argument")
 	}
 
 	tracer, closer := tracing.Init("hello-world")
@@ -23,10 +23,13 @@ func main() {
 	opentracing.SetGlobalTracer(tracer)
 
 	helloTo := os.Args[1]
+	greeting := os.Args[2]
 
 	span := tracer.StartSpan("say-hello")
 	span.SetTag("hello-to", helloTo)
 	defer span.Finish()
+
+	span.SetBaggageItem("greeting", greeting)
 
 	ctx := opentracing.ContextWithSpan(context.Background(), span)
 
@@ -45,6 +48,7 @@ func formatString(ctx context.Context, helloTo string) string {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	ext.SpanKindRPCClient.Set(span)
 	ext.HTTPUrl.Set(span, url)
 	ext.HTTPMethod.Set(span, "GET")
@@ -80,18 +84,13 @@ func printHello(ctx context.Context, helloStr string) {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	ext.SpanKindRPCClient.Set(span)
 	ext.HTTPUrl.Set(span, url)
 	ext.HTTPMethod.Set(span, "GET")
-	span.Tracer().Inject(
-		span.Context(),
-		opentracing.HTTPHeaders,
-		opentracing.HTTPHeadersCarrier(req.Header),
-	)
+	span.Tracer().Inject(span.Context(), opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
 
 	if _, err := xhttp.Do(req); err != nil {
 		panic(err.Error())
 	}
-
-	span.LogKV("event", "printing string")
 }

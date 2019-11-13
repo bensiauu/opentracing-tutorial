@@ -12,22 +12,26 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/format", func(w http.ResponseWriter, r *http.Request) {
-		tracer, closer := tracing.Init("formatter")
-		defer closer.Close()
+	tracer, closer := tracing.Init("formatter")
+	defer closer.Close()
 
+	http.HandleFunc("/format", func(w http.ResponseWriter, r *http.Request) {
 		spanCtx, _ := tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 		span := tracer.StartSpan("format", ext.RPCServerOption(spanCtx))
 		defer span.Finish()
 
-		helloTo := r.FormValue("helloTo")
-		helloStr := fmt.Sprintf("Hello, %s!", helloTo)
-		w.Write([]byte(helloStr))
+		greeting := span.BaggageItem("greeting")
+		if greeting == "" {
+			greeting = "Hello"
+		}
 
+		helloTo := r.FormValue("helloTo")
+		helloStr := fmt.Sprintf("%s, %s!", greeting, helloTo)
 		span.LogFields(
-			otlog.String("event", "string formatting"),
+			otlog.String("event", "string-format"),
 			otlog.String("value", helloStr),
 		)
+		w.Write([]byte(helloStr))
 	})
 
 	log.Fatal(http.ListenAndServe(":8081", nil))
